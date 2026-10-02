@@ -1,0 +1,120 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum IdentificationType {
+  SOUTH_AFRICAN_ID
+  PASSPORT
+}
+
+enum TradeTestStatus {
+  YES
+  NO
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  CANCELLED
+}
+
+// Identity anchor is identificationNumber, not email — students can change their
+// email at any time without breaking payment history, certificates or portal access.
+model Student {
+  id                   String             @id @default(cuid())
+  identificationNumber String             @unique
+  identificationType   IdentificationType
+  firstName            String
+  middleName           String?
+  surname              String
+  email                String             @unique
+  phone                String
+  address              String
+  dateOfBirth          DateTime
+  nationality          String
+  ethnicity            String?
+  homeLanguage         String
+  qualification        String
+  experience            String
+  tradeTest            TradeTestStatus
+  tradeTestDetails     String?
+  cohortLabel          String?
+  passwordHash         String
+  status               ApplicationStatus  @default(PENDING)
+  costAware            Boolean            @default(false)
+  invoicePreference    String
+  venueAware           Boolean            @default(false)
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  certificate          Certificate?
+  payments             Payment[]
+
+}
+
+model Cohort {
+  id         String  @id @default(cuid())
+  label      String
+  training   String
+  assessment String
+  position   Int     @default(0)
+}
+
+model PortalContent {
+  id                    String @id @default("singleton")
+  programmeTitle        String
+  programmeDescription  String
+  welcomeMessage        String
+}
+
+model Certificate {
+  id          String   @id @default(cuid())
+  studentId   String   @unique
+  student     Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  fileName    String
+  fileType    String
+  blobUrl     String
+  uploadedAt  DateTime @default(now())
+}
+
+// Keyed by identificationNumber so payments survive an email change between
+// registration and Ozow's confirmation callback.
+model Payment {
+  id                   String        @id @default(cuid())
+  reference            String        @unique
+  identificationNumber String
+  student              Student?      @relation(fields: [identificationNumber], references: [identificationNumber])
+  amount               String
+  status               PaymentStatus @default(PENDING)
+  transactionId        String?
+  createdAt            DateTime      @default(now())
+  paidAt               DateTime?
+
+  invoice              Invoice?
+
+  @@index([identificationNumber])
+}
+
+model Invoice {
+  id            String   @id @default(cuid())
+  reference     String   @unique
+  payment       Payment  @relation(fields: [reference], references: [reference])
+  invoiceNumber String
+  emailedTo     String
+  amount        String
+  issuedAt      DateTime @default(now())
+  emailSent     Boolean  @default(false)
+  emailError    String?
+}

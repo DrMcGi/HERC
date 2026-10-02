@@ -2,7 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { ArrowUpRight, ChevronDown, FileText, ShieldCheck } from "lucide-react";
-import { getCohorts, getRegistrations, getUsers, Registration, REGISTRATIONS_KEY, User, USERS_KEY, writeStorage } from "../lib/demo-auth";
+import { startOzowPayment } from "../lib/payment-client";
 
 type FormState = { firstName: string; middleName: string; surname: string; email: string; phone: string; address: string; dateOfBirth: string; identificationType: "South African ID" | "Passport" | ""; identificationNumber: string; nationality: string; ethnicity: string; homeLanguage: string; qualification: string; experience: string; tradeTest: "Yes" | "No" | ""; tradeTestDetails: string; costAware: string; invoice: string; cohort: string; venueAware: string; password: string; confirm: string };
 const initialForm: FormState = { firstName: "", middleName: "", surname: "", email: "", phone: "", address: "", dateOfBirth: "", identificationType: "", identificationNumber: "", nationality: "", ethnicity: "", homeLanguage: "", qualification: "", experience: "", tradeTest: "", tradeTestDetails: "", costAware: "", invoice: "", cohort: "", venueAware: "", password: "", confirm: "" };
@@ -15,27 +15,39 @@ function Field({ label, value, onChange, type = "text", required = true, placeho
 export default function StudentRegistrationForm({ onSuccess, onSubmit, submitLabel = "Submit registration", cohorts: providedCohorts }: Props) {
   const [form, setForm] = useState<FormState>(initialForm);
   const [error, setError] = useState("");
-  const cohorts = providedCohorts?.length ? providedCohorts : getCohorts().map((cohort) => `${cohort.training} (Training) and ${cohort.assessment} (Assessment)`);
+  const [registered, setRegistered] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const cohorts = providedCohorts ?? [];
   const update = (name: keyof FormState, value: string) => { setForm((current) => ({ ...current, [name]: value })); setError(""); };
 
-  function submit(event: FormEvent<HTMLFormElement>) {
+  async function retryPayment() {
+    setSubmitting(true);
+    const result = await startOzowPayment();
+    setSubmitting(false);
+    if (!result.ok) setError(result.error || "Unable to start payment.");
+  }
+
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const email = form.email.trim().toLowerCase();
-    const fullName = [form.firstName.trim(), form.middleName.trim(), form.surname.trim()].filter(Boolean).join(" ");
-    if (!form.firstName.trim() || !form.surname.trim() || !email || !form.phone.trim() || !form.address.trim() || !form.dateOfBirth || !form.identificationType || !form.identificationNumber.trim() || !form.nationality.trim() || !form.homeLanguage.trim() || !form.qualification.trim() || !form.experience.trim() || !form.tradeTest || !form.costAware || !form.invoice || !form.cohort || !form.venueAware || !form.password) { setError("Please complete every required field."); return; }
     if (ageFromDate(form.dateOfBirth) < 16 || ageFromDate(form.dateOfBirth) > 100) { setError("Please enter a valid date of birth."); return; }
     if (form.tradeTest === "Yes" && !form.tradeTestDetails.trim()) { setError("Please tell us which trade test you have completed."); return; }
     if (form.password !== form.confirm) { setError("Passwords do not match."); return; }
-    const existing = getUsers().find((user) => user.email === email);
-    if (existing?.password) { setError("An account with this email already exists."); return; }
-    const details: Partial<User> = { name: fullName, firstName: form.firstName.trim(), middleName: form.middleName.trim(), surname: form.surname.trim(), phone: form.phone.trim(), address: form.address.trim(), dateOfBirth: form.dateOfBirth, age: ageFromDate(form.dateOfBirth), identificationType: form.identificationType as "South African ID" | "Passport", identificationNumber: form.identificationNumber.trim(), nationality: form.nationality.trim(), ethnicity: form.ethnicity.trim() || "Prefer not to say", homeLanguage: form.homeLanguage.trim(), qualification: form.qualification.trim(), experience: form.experience.trim(), tradeTest: form.tradeTest as "Yes" | "No", tradeTestDetails: form.tradeTestDetails.trim(), cohort: form.cohort, status: "pending" };
-    const id = existing?.id || crypto.randomUUID();
-    const student: User = { ...(existing || {}), ...details, id, email, password: form.password, role: "student" } as User;
-    const registration: Registration = { ...student, phone: form.phone.trim(), qualification: form.qualification.trim(), invoice: form.invoice, costAware: form.costAware, venueAware: form.venueAware, submittedAt: new Date().toISOString(), status: "pending" };
-    writeStorage(USERS_KEY, [...getUsers().filter((user) => user.email !== email), student]);
-    writeStorage(REGISTRATIONS_KEY, [...getRegistrations().filter((item) => item.email !== email), registration]);
-    onSuccess?.();
+
+    setSubmitting(true);
+    const response = await fetch("/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
+    });
+    const data = await response.json();
+    if (!response.ok) { setSubmitting(false); setError(data.error || "Unable to complete registration."); return; }
+
     onSubmit?.();
+    setRegistered(true);
+    const payment = await startOzowPayment();
+    setSubmitting(false);
+    if (!payment.ok) { setError(payment.error || "Your registration was saved, but payment could not be started. Please retry below."); return; }
+    onSuccess?.();
   }
 
   return <form className="student-registration-form" onSubmit={submit}>
@@ -62,6 +74,8 @@ export default function StudentRegistrationForm({ onSuccess, onSubmit, submitLab
     <p className="form-note"><ShieldCheck size={16} /> Candidates provide their own PPE. Travel and accommodation are for the candidate&apos;s own account.</p>
     <div className="upload-grid"><label className="upload"><FileText size={20} /><span>Curriculum Vitae <small>PDF or image · up to 5 files</small></span><input type="file" name="cv" accept=".pdf,image/*" multiple /></label><label className="upload"><FileText size={20} /><span>Qualifications <small>PDF, document or image · up to 5</small></span><input type="file" name="qualifications" accept=".pdf,.doc,.docx,image/*" multiple /></label><label className="upload"><FileText size={20} /><span>ID Copy <small>PDF, document or image · up to 5 files</small></span><input type="file" name="id-copy" accept=".pdf,.doc,.docx,image/*" multiple /></label></div>
     <div className="form-section-label">Secure your account</div><div className="auth-form-grid"><Field label="Password" type="password" value={form.password} onChange={(value) => update("password", value)} /><Field label="Confirm password" type="password" value={form.confirm} onChange={(value) => update("confirm", value)} /></div>
-    {error && <p className="auth-error">{error}</p>}<button className="button button-dark auth-submit submit-button" type="submit">{submitLabel} <ArrowUpRight size={17} /></button>
+    {error && <p className="auth-error">{error}</p>}
+    {registered ? <button className="button button-dark auth-submit submit-button" type="button" onClick={retryPayment} disabled={submitting}>{submitting ? "Starting payment…" : "Retry payment"} <ArrowUpRight size={17} /></button>
+      : <button className="button button-dark auth-submit submit-button" type="submit" disabled={submitting}>{submitting ? "Saving…" : submitLabel} <ArrowUpRight size={17} /></button>}
   </form>;
 }

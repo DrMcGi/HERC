@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="620" height="260" viewBox="0 0 620 260" role="img" aria-labelledby="hercLogoTitle hercLogoDesc">
+  <title id="hercLogoTitle">Hulisani Education Resources Centre logo</title>
+  <desc id="hercLogoDesc">Transparent vector recreation of the Hulisani logo with gold lettering, red subtitle, and molecular network mark.</desc>
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="0.2">
+      <stop offset="0" stop-color="#d5a42a" />
+      <stop offset="0.38" stop-color="#be7f19" />
+      <stop offset="0.72" stop-color="#a96318" />
+      <stop offset="1" stop-color="#d0a234" />
+    </linearGradient>
+    <linearGradient id="goldEdge" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c58c24" />
+      <stop offset="1" stop-color="#9a6312" />
+    </linearGradient>
+    <linearGradient id="goldRight" x1="0" y1="0" x2="1" y2="0.2">
+      <stop offset="0" stop-color="#a76515" />
+      <stop offset="0.62" stop-color="#7f4610" />
+      <stop offset="1" stop-color="#aa6a17" />
+    </linearGradient>
+    <radialGradient id="redNode" cx="35%" cy="25%" r="72%"><stop offset="0" stop-color="#fff6f2"/><stop offset="0.2" stop-color="#ffad9d"/><stop offset="0.64" stop-color="#e64532"/><stop offset="1" stop-color="#84221d"/></radialGradient>
+    <radialGradient id="purpleNode" cx="35%" cy="25%" r="72%"><stop offset="0" stop-color="#fff6ff"/><stop offset="0.2" stop-color="#d6a1df"/><stop offset="0.64" stop-color="#8d4b9f"/><stop offset="1" stop-color="#51215d"/></radialGradient>
+    <radialGradient id="cyanNode" cx="35%" cy="25%" r="72%"><stop offset="0" stop-color="#f3fdff"/><stop offset="0.2" stop-color="#b7efff"/><stop offset="0.64" stop-color="#42c3e8"/><stop offset="1" stop-color="#157d9d"/></radialGradient>
+    <radialGradient id="greenNode" cx="35%" cy="25%" r="72%"><stop offset="0" stop-color="#f4fff8"/><stop offset="0.22" stop-color="#b9f5cc"/><stop offset="0.64" stop-color="#42c77d"/><stop offset="1" stop-color="#147a48"/></radialGradient>
+    <radialGradient id="yellowNode" cx="35%" cy="25%" r="72%"><stop offset="0" stop-color="#fffef2"/><stop offset="0.18" stop-color="#fff79b"/><stop offset="0.64" stop-color="#f1e727"/><stop offset="1" stop-color="#cfa812"/></radialGradient>
+    <radialGradient id="orangeNode" cx="35%" cy="25%" r="72%"><stop offset="0" stop-color="#fff9ef"/><stop offset="0.22" stop-color="#ffd49b"/><stop offset="0.64" stop-color="#de9c3c"/><stop offset="1" stop-color="#a56721"/></radialGradient>
+    <radialGradient id="blackNode" cx="35%" cy="25%" r="72%"><stop offset="0" stop-color="#f0f0f0"/><stop offset="0.2" stop-color="#8c8c8c"/><stop offset="0.66" stop-color="#242424"/><stop offset="1" stop-color="#050505"/></radialGradient>
+    <radialGradient id="grayNode" cx="35%" cy="25%" r="72%"><stop offset="0" stop-color="#ffffff"/><stop offset="0.25" stop-color="#ececec"/><stop offset="0.66" stop-color="#b9b9b9"/><stop offset="1" stop-color="#8c8c8c"/></radialGradient>
+    <filter id="shadow" x="-45%" y="-45%" width="190%" height="190%">
+      <feDropShadow dx="1.1" dy="1.4" stdDeviation="1.1" flood-color="#000" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <g stroke="#6d6d6d" stroke-width="4" stroke-linecap="round" filter="url(#shadow)">
+    <g transform="translate(-27 0)">
+      <line x1="467" y1="108" x2="473" y2="17" />
+      <line x1="467" y1="108" x2="424" y2="47" />
+      <line x1="467" y1="108" x2="534" y2="47" />
+      <line x1="467" y1="108" x2="375" y2="184" />
+      <line x1="467" y1="108" x2="450" y2="213" />
+      <line x1="467" y1="108" x2="512" y2="198" />
+      <line x1="467" y1="108" x2="604" y2="176" />
+      <line x1="467" y1="108" x2="406" y2="242" />
+    </g>
+  </g>
+
+  <g fill="url(#gold)" stroke="url(#goldEdge)" stroke-width="0.65" stroke-linejoin="round">
+    <path d="M34 67h22v67H34z" />
+    <path d="M56 94h13v12H56z" />
+    <path d="M79 94h13v12H79z" fill="url(#goldRight)" stroke="#7f4610" />
+    <path d="M92 67h22v67H92z" fill="url(#goldRight)" stroke="#7f4610" />
+    <path d="M124 67h22v43c0 6 4 10 12 10h12c8 0 12-4 12-10V67h22v45c0 14-9 22-26 22h-28c-17 0-26-8-26-22z" />
+    <g transform="translate(-24 0)">
+    <path d="M238 67h22v45c0 6 4 9 12 9h27v13h-29c-20 0-32-8-32-24z" />
+    <path d="M299 81h22v53h-22z" fill="url(#goldRight)" stroke="#7f4610" />
+    <path d="M299 67h22v6h-22z" fill="url(#goldRight)" stroke="#7f4610" />
+    </g>
+    <g transform="translate(-30 0)">
+    <path d="M337 67h83v16h-54c-7 0-9 4-3 8l36 18c17 9 11 25-10 25h-34v-15h28c7 0 9-4 3-8l-36-19c-17-9-10-25 12-25z" fill="url(#goldRight)" stroke="none" />
+    </g>
+    <g transform="translate(-23 0)">
+    <path d="M423 134V91c0-16 10-24 30-24h21c19 0 29 8 29 24v43h-22V94c0-8-4-12-13-12h-10c-9 0-14 5-14 13v39z" />
+    </g>
+    <g transform="translate(-16 0)">
+    <path d="M506 134V91c0-16 10-24 30-24h20c20 0 30 8 30 24v43h-22V94c0-8-4-12-12-12h-12c-8 0-12 4-12 12v40z" />
+    </g>
+    <g transform="translate(-7 0)">
+      <path d="M579 67h20v6h-20z" fill="url(#goldRight)" stroke="#7f4610" transform="translate(8 0)" />
+      <path d="M579 81h20v53h-20z" fill="url(#goldRight)" stroke="#7f4610" transform="translate(8 0)" />
+    </g>
+  </g>
+
+  <text x="36" y="153" fill="#9a1421" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="700">Education Resources Centre</text>
+
+  <g filter="url(#shadow)">
+    <g transform="translate(-27 0)">
+      <circle cx="467" cy="108" r="15.5" fill="url(#redNode)" />
+      <circle cx="473" cy="17" r="15.5" fill="url(#redNode)" />
+      <circle cx="424" cy="47" r="15.5" fill="url(#purpleNode)" />
+      <circle cx="534" cy="47" r="15.5" fill="url(#cyanNode)" />
+      <circle cx="375" cy="184" r="15.5" fill="url(#greenNode)" />
+      <circle cx="450" cy="213" r="15.5" fill="url(#yellowNode)" />
+      <circle cx="512" cy="198" r="15.5" fill="url(#blackNode)" />
+      <circle cx="604" cy="176" r="15.5" fill="url(#grayNode)" />
+      <circle cx="406" cy="242" r="15.5" fill="url(#orangeNode)" />
+    </g>
+  </g>
+</svg>
